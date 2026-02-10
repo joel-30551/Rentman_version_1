@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% block title %}Advertise Property{% endblock %}
+
+{% block content %}
+<style>
+
+.advertise-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #2ec4b6;
+    margin-bottom: 10px;
+}
+
+p {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #555;
+}
+
+fieldset {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    background-color: #fafafa;
+}
+
+legend {
+    font-weight: bold;
+    color: #333;
+    padding: 0 5px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="file"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    box-sizing: border-box;
+}
+
+input[type="file"] {
+    background-color: transparent;
+}
+
+textarea {
+    resize: vertical;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: 2px solid #4CAF50;
+    border-color: #4CAF50;
+}
+
+button[type="submit"] {
+    background-color: #2ec4b6;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color:#2ec4b6 ;
+}
+
+
+body.dark-mode .advertise-container {
+    background-color: #1f1f2f;
+    color: #ddd;
+}
+
+body.dark-mode h1 {
+    color: #2ec4b6;
+}
+
+body.dark-mode p {
+    color: #aaa;
+}
+
+body.dark-mode fieldset {
+    background-color: #2a2a3a;
+    border-color: #444;
+}
+
+body.dark-mode legend,
+body.dark-mode label {
+    color: #ddd;
+}
+
+body.dark-mode input[type="text"],
+body.dark-mode input[type="email"],
+body.dark-mode input[type="tel"],
+body.dark-mode input[type="number"],
+body.dark-mode select,
+body.dark-mode textarea {
+    background-color: #333344;
+    color: #eee;
+    border: 1px solid #555;
+}
+
+body.dark-mode input[type="file"] {
+    color: #eee;
+}
+
+body.dark-mode input:focus,
+body.dark-mode textarea:focus,
+body.dark-mode select:focus {
+    outline: 2px solid #2ec4b6;
+    border-color: #2ec4b6;
+}
+
+body.dark-mode button[type="submit"] {
+    background-color: #2ec4b6;
+    color: #fff;
+}
+
+body.dark-mode button[type="submit"]:hover {
+    background-color: #26b0a6;
+}
+</style>
+
+<div class="advertise-container">
+    <h1>Advertise Your Property</h1>
+    <p>Fill in the details below to list your property.</p>
+
+    <form method="POST" action="{{ url_for('advertise') }}" enctype="multipart/form-data">
+        
+        
+        <fieldset>
+            <legend>Owner Information</legend>
+            <div class="form-group">
+                <label for="owner_name">Full Name</label>
+                <input type="text" id="owner_name" name="owner_name" required placeholder="Enter full name">
+            </div>
+
+            <div class="form-group">
+                <label for="owner_contact">Contact Number</label>
+                <input type="tel" id="owner_contact" name="owner_contact" required placeholder="e.g. +233 55 123 4567">
+            </div>
+
+            <div class="form-group">
+                <label for="owner_email">Email (optional)</label>
+                <input type="email" id="owner_email" name="owner_email"
+                       placeholder="e.g. you@example.com"
+                       value="{{ session.get('user_email', '') }}">
+            </div>
+        </fieldset>
+
+        
+        <fieldset>
+            <legend>Property Details</legend>
+            <div class="form-group">
+                <label for="title">Property Title</label>
+                <input type="text" id="title" name="title" required placeholder="e.g. 2-Bedroom Apartment in East Legon">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="5" required placeholder="Describe your property..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location" required placeholder="e.g. Accra, East Legon">
+            </div>
+        </fieldset>
+
+        
+        <fieldset>
+            <legend>Deal Information</legend>
+            <div class="form-group">
+                <label for="deal_type">Type of Deal</label>
+                <select id="deal_type" name="deal_type" required>
+                    <option value="">-- Select Deal Type --</option>
+                    <option value="rent">Rent</option>
+                    <option value="lease">Lease</option>
+                    <option value="sale">Sale</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price (USD)</label>
+                <input type="number" id="price" name="price" required placeholder="Enter price">
+            </div>
+        </fieldset>
+
+        
+        <fieldset>
+            <legend>Property Images</legend>
+            <p>Please upload at least 5 clear pictures of your property.</p>
+            <input type="file" name="images" id="images" multiple accept="image/*" required>
+        </fieldset>
+
+        
+        <div class="form-group" style="text-align:center;">
+            <button type="submit">Publish Property</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

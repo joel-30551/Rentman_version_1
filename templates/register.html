@@ -1,0 +1,153 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<style>
+    
+.form-card {
+    max-width: 400px;
+    margin: 80px auto;
+    padding: 30px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(80, 180, 213, 0.4);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.form-card.show {
+    opacity: 1;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #2ec4b6;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 1rem;
+    color: #333;
+    box-sizing: border-box;
+}
+
+input:focus {
+    outline: none;
+    border-color: #108e82;
+    box-shadow: 0 0 6px #2ec4b6;
+}
+
+
+
+.btn {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+
+.btn.primary {
+    background-color: #2ec4b6;
+    color: #fff;
+}
+
+.btn.primary:hover {
+    background-color: #18a092;
+}
+
+.register-link {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.register-link a {
+    color:#2ec4b6;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
+.hen{
+    text-align: center;
+    text-decoration: double;
+    color: #2ec4b6;
+}
+
+</style>
+<div id="register-form" class="form-card">
+    <h1 class="hen">RentMan</h1>
+    <h2>Create Your Account</h2>
+    <form method="POST" action="{{ url_for('register') }}">
+        <div class="form-group">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" required />
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="form-group">
+            <label for="contact">Contact Number:</label>
+            <input type="text" id="contact" name="contact" />
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required />
+        </div>
+
+        <button type="submit" class="btn primary">Register</button>
+    </form>
+
+    <p class="register-link">
+        Already have an account? <a href="{{ url_for('login') }}">Login here</a>.
+    </p>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+    const registerForm = document.getElementById("register-form");
+    if (registerForm) {
+        setTimeout(() => {
+            registerForm.classList.add("show");
+        }, 200); 
+    }
+});
+document.addEventListener("DOMContentLoaded", () => {
+    const nameInput = document.getElementById("name");
+
+    if (nameInput) {
+        nameInput.addEventListener("input", () => {
+            const formatted = nameInput.value
+                .toLowerCase()
+                .split(" ")
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" ");
+            nameInput.value = formatted;
+        });
+    }
+});
+
+</script>
+{% endblock %}

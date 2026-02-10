@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}Explore Properties{% endblock %}
+
+{% block content %}
+<style>
+  .explore-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+
+  .search-bar {
+    margin-bottom: 30px;
+    display: flex;
+    gap: 10px;
+  }
+
+  .search-bar input, 
+  .search-bar select {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    flex: 1;
+  }
+
+  .search-bar button {
+    padding: 10px 25px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #2ec4b6;
+    color: white;
+    cursor: pointer;
+  }
+
+  h2 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .property-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap: 20px;
+  }
+
+  .property-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+    transition: box-shadow 0.3s ease;
+    background: #fff;
+  }
+
+  .property-card:hover {
+    box-shadow: 0 0 10px rgba(0,0,0,0.15);
+  }
+
+  .property-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+  }
+
+  .property-card h3 {
+    margin: 10px 0 5px 0;
+    color: #2ec4b6;
+  }
+
+  .property-card p {
+    color: #555;
+    margin-bottom: 15px;
+  }
+
+  .no-results {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #777;
+  }
+</style>
+
+<div class="explore-container">
+
+  <h2>Explore Properties</h2>
+  
+  <form method="GET" action="{{ url_for('explore') }}" class="search-bar">
+    <input 
+      type="text" 
+      name="q" 
+      placeholder="Search by location or title..." 
+      value="{{ request.args.get('q', '') }}"
+    />
+    <select name="property_type">
+      <option value="">All Types</option>
+      <option value="house" {% if request.args.get('property_type') == 'house' %}selected{% endif %}>House</option>
+      <option value="shop" {% if request.args.get('property_type') == 'shop' %}selected{% endif %}>Shop</option>
+      <option value="room" {% if request.args.get('property_type') == 'room' %}selected{% endif %}>Room</option>
+    </select>
+    <select name="transaction_type">
+      <option value="">All Deals</option>
+      <option value="sale" {% if request.args.get('transaction_type') == 'sale' %}selected{% endif %}>Sale</option>
+      <option value="lease" {% if request.args.get('transaction_type') == 'lease' %}selected{% endif %}>Lease</option>
+      <option value="rent" {% if request.args.get('transaction_type') == 'rent' %}selected{% endif %}>Rent</option>
+    </select>
+    <button type="submit">Search</button>
+  </form>
+
+  
+  {% if properties %}
+  <div class="property-grid">
+    {% for prop in properties %}
+    <div class="property-card">
+      <a href="{{ url_for('property_detail', id=prop.id) }}">
+        <img src="{{ prop.image_url or url_for('static', filename='placeholder.png') }}" alt="{{ prop.title }}">
+        <h3>{{ prop.title }}</h3>
+        <p>{{ prop.city }} | {{ prop.transaction_type }} | ${{ prop.price }}</p>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="no-results">No properties found matching your criteria.</p>
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}RentMan{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        
+        :root {
+            --bg-color: #f4f7f9;
+            --text-color: #1b263b;
+            --nav-bg: #1b263b;
+            --nav-text: #ffffff;
+            --link-hover: #2ec4b6;
+            --footer-bg: #1b263b;
+            --accent-color: #2ec4b6;
+        }
+
+        body.dark-mode {
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --nav-bg: #121212;
+            --nav-text: #ffffff;
+            --link-hover: #2ec4b6;
+            --footer-bg: #121212;
+            --accent-color: #2ec4b6;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Navigation Bar */
+        nav {
+            background-color: var(--nav-bg);
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            flex-wrap: wrap;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-name a {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .brand-name a:hover {
+            color: var(--link-hover);
+            transform: scale(00.5s);
+        }
+
+        .hamburger {
+            background: none;
+            border: none;
+            color: var(--nav-text);
+            font-size: 1.8rem;
+            cursor: pointer;
+            display: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--nav-text);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 6px 10px;
+            border-radius: 4px;
+        }
+
+        nav a:hover {
+            color: var(--link-hover);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .icon-toggle {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            color: var(--nav-text);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .icon-toggle:hover {
+            color: var(--link-hover);
+        }
+
+        .container {
+            flex: 1;
+            padding: 20px;
+        }
+
+        footer {
+            background-color: var(--footer-bg);
+            color: var(--nav-text);
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Mobile Styles */
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: row;
+                width: 100%;
+                display: none;
+                margin-top: 10px;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            nav {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+
+            .icon-toggle {
+                align-self: flex-end;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+{% if session.get('user_id') %}
+<nav>
+    <div class="nav-left">
+        <div class="brand-name">
+            <a href="{{ url_for('home') }}">RentMan</a>
+        </div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">&#9776;</button>
+    </div>
+
+    <div class="nav-links" id="navLinks">
+        <a href="{{ url_for('explore') }}">Explore</a>
+        <a href="{{ url_for('advertise') }}">Advertise</a>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('profile') }}">Profile</a>
+        <a href="{{ url_for('saved') }}">Saved</a>
+        <a href="{{ url_for('settings') }}">Settings</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+
+    <button class="icon-toggle" id="darkModeToggle" title="Toggle Dark Mode">🌙</button>
+</nav>
+{% endif %}
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+{% if session.get('user_id') %}
+<footer>
+    <p>&copy; {{ now.year }} RentMan. All rights reserved.</p>
+    <p id="datenow"></p>
+</footer>
+{% endif %}
+
+{% if session.get('user_id') %}
+<script>
+    const toggleBtn = document.getElementById('darkModeToggle');
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navLinks = document.getElementById('navLinks');
+    const body = document.body;
+    function setIcon() {
+        toggleBtn.textContent = body.classList.contains('dark-mode') ? '☀︎' : '☪︎';
+    }
+
+    if (localStorage.getItem('darkMode') === 'true') {
+        body.classList.add('dark-mode');
+    }
+
+    setIcon();
+
+    toggleBtn.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
+        setIcon();
+    });
+
+    hamburgerBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+</script>
+{% endif %}
+
+</body>
+</html>

@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<style>
+    .home-container { max-width: 900px; margin: auto; padding: 20px; font-family: Arial, sans-serif; }
+    .hero { text-align: center; padding: 40px 20px; background: #f5f5f5; border-radius: 8px; }
+    .hero h1 { font-size: 2.2rem; margin-bottom: 20px; }
+    .cta-buttons a {
+        display: inline-block;
+        margin: 0 10px;
+        padding: 12px 24px;
+        border-radius: 5px;
+        font-weight: bold;
+        text-decoration: none;
+    }
+    .btn { background-color: #2ec4b6; color: white; }
+    .btn.secondary { background-color: #555; }
+    .quick-search { margin: 30px 0; text-align: center; }
+    .quick-search input[type="text"] {
+        width: 70%;
+        padding: 10px;
+        font-size: 1rem;
+        border-radius: 5px 0 0 5px;
+        border: 1px solid #ccc;
+    }
+    .quick-search button {
+        padding: 10px 20px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 0 5px 5px 0;
+        background-color: #2ec4b6;
+        color: white;
+        cursor: pointer;
+    }
+    .features { margin: 40px 0; }
+    .features h2 { text-align: center; margin-bottom: 20px; }
+    .features ul { list-style: none; padding: 0; max-width: 500px; margin: auto; }
+    .features ul li {
+        padding: 10px 0;
+        font-size: 1.1rem;
+    }
+    .sample-properties { margin: 40px 0; }
+    .sample-properties h2 { margin-bottom: 20px; }
+    .property-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+        gap: 20px;
+    }
+    .property-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        text-align: center;
+        transition: box-shadow 0.3s ease;
+    }
+    .property-card:hover {
+        box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    }
+    .property-card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+    .property-card h3 {
+        margin: 10px 0 5px 0;
+    }
+    .property-card p {
+        color: #555;
+        margin-bottom: 15px;
+    }
+    .cta-banner {
+        background-color: #2ec4b6;
+        color: white;
+        padding: 30px 20px;
+        text-align: center;
+        border-radius: 8px;
+        margin-top: 50px;
+    }
+    .cta-banner a {
+        color: white;
+        font-weight: bold;
+        background-color: #333;
+        padding: 12px 30px;
+        border-radius: 5px;
+        text-decoration: none;
+        margin-top: 15px;
+        display: inline-block;
+    }
+</style>
+
+<div class="home-container">
+
+    
+    <section class="hero">
+        <h1>Find your next home, shop, or office with ease.</h1>
+
+        {% if not session.get('user_id') %}
+            <div class="cta-buttons">
+                <a href="{{ url_for('register') }}" class="btn">Sign Up</a>
+                <a href="{{ url_for('login') }}" class="btn secondary">Login</a>
+            </div>
+        {% else %}
+            <p>Welcome back, {{ session['user_name'] }}!</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('advertise') }}" class="btn">Advertise</a>
+                <a href="{{ url_for('explore') }}" class="btn secondary">Explore</a>
+                <a href="{{ url_for('saved') }}" class="btn">Saved</a>
+                <a href="{{ url_for('dashboard') }}" class="btn">Dashboard</a>
+            </div>
+        {% endif %}
+    </section>
+
+    
+    <section class="quick-search">
+        <form method="GET" action="{{ url_for('explore') }}">
+            <input type="text" name="q" placeholder="Search properties by location or title..." />
+            <button type="submit" class="btn">Search</button>
+        </form>
+    </section>
+
+    
+    <section class="features">
+        <h2>Why Choose Us?</h2>
+        <ul>
+            <li>⛉ Upload your property easily</li>
+            <li>☑ Browse verified listings</li>
+            <li>✰ Save and revisit your favorites</li>
+        </ul>
+    </section>
+
+    
+    <section class="sample-properties">
+        <h2>Latest Properties</h2>
+        <div class="property-grid">
+            {% if sample_properties %}
+                {% for prop in sample_properties %}
+                <div class="property-card">
+                    <a href="{{ url_for('property_detail', id=prop.id) }}">
+                        <img src="{{ prop.image_url or url_for('static', filename='placeholder.png') }}" alt="{{ prop.title }}">
+                        <h3>{{ prop.title }}</h3>
+                        <p>{{ prop.city }} | {{ prop.transaction_type }} | ${{ prop.price }}</p>
+                    </a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No properties yet. Be the first to advertise!</p>
+            {% endif %}
+        </div>
+    </section>
+
+    
+    <section class="cta-banner">
+        <h2>Ready to advertise or explore?</h2>
+        <a href="{{ url_for('advertise') }}" class="btn">Get Started</a>
+    </section>
+
+</div>
+{% endblock %}
+
